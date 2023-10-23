@@ -1,11 +1,16 @@
 #!/usr/bin/node
-const args = process.argv.slice(process.argv.length - 1);
 const fs = require('fs');
 
-fs.readFile(args.toString(), 'utf8', (err, data) => {
-  if (err) {
-    console.error(err);
-    return;
-  }
-  console.log(data);
-});
+const filePath = process.argv[2]; // Obtener el primer argumento (nombre del archivo) desde la línea de comandos
+
+if (!filePath) {
+  console.log('Usage: node 0-readme.js <file-path>');
+} else {
+  fs.readFile(filePath, 'utf-8', (err, data) => {
+    if (err) {
+      console.error(err); // Imprimir el error en caso de que ocurra uno
+    } else {
+      console.log(data); // Imprimir el contenido del archivo
+    }
+  });
+}
