@@ -1,20 +1,26 @@
 #!/usr/bin/node
-const process = require('process');
-const axios = require('axios').default;
+const request = require('request');
 const fs = require('fs');
 
-const URL = process.argv[2];
+const url = process.argv[2];
 const filePath = process.argv[3];
 
-axios.get(URL, {
-}).then(response => {
-  fs.writeFile(filePath, response.data, 'utf-8', err => {
-    if (err) {
-      console.log(err.message);
+if (!url || !filePath) {
+  console.log('Usage: node 5-request_store.js <URL> <file-path>');
+} else {
+  request.get(url, (error, response, body) => {
+    if (error) {
+      console.error(error);
+    } else if (response.statusCode === 200) {
+      fs.writeFile(filePath, body, 'utf-8', (err) => {
+        if (err) {
+          console.error(err);
+        } else {
+          console.log(`The contents have been saved to ${filePath}`);
+        }
+      });
+    } else {
+      console.error(`Request failed with status code: ${response.statusCode}`);
     }
   });
-}).catch(err => {
-  if (err) {
-    console.log(err.message);
-  }
-});
+}
