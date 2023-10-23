@@ -1,28 +1,33 @@
 #!/usr/bin/node
-const process = require('process');
-const axios = require('axios').default;
+const request = require('request');
 
-const URL = process.argv[2];
+const apiUrl = process.argv[2];
 
-axios.get(URL, {
-}).then(response => {
-  const todo = response.data;
-  const usersWithCompTasks = {};
-  for (let i = 0; i < todo.length; i++) {
-    if (todo[i].completed === true) {
-      const key = todo[i].userId;
-      if (usersWithCompTasks[key] === undefined) {
-        usersWithCompTasks[key] = 1;
-      } else {
-        let currTasks = usersWithCompTasks[key];
-        currTasks += 1;
-        usersWithCompTasks[key] = currTasks;
+if (!apiUrl) {
+  console.log('Usage: node 6-completed_tasks.js <API URL>');
+} else {
+  request.get(apiUrl, (error, response, body) => {
+    if (error) {
+      console.error(error);
+    } else if (response.statusCode === 200) {
+      const todos = JSON.parse(body);
+
+      // Crear un objeto para contar las tareas completadas por usuario
+      const completedTasks = {};
+
+      for (const todo of todos) {
+        if (todo.completed) {
+          if (completedTasks[todo.userId]) {
+            completedTasks[todo.userId]++;
+          } else {
+            completedTasks[todo.userId] = 1;
+          }
+        }
       }
+
+      console.log(completedTasks);
+    } else {
+      console.error(`Request failed with status code: ${response.statusCode}`);
     }
-  }
-  console.log(usersWithCompTasks);
-}).catch(error => {
-  if (error) {
-    console.log(error.message);
-  }
-});
+  });
+}
