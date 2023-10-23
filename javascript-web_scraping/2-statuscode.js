@@ -1,10 +1,16 @@
 #!/usr/bin/node
-const axios = require('axios');
-const args = process.argv.slice(process.argv.length - 1);
+const request = require('request');
 
-axios({
-  method: 'GET',
-  url: args[0]
-}).then(res => {
-  console.log('code: '.concat(res.status));
-}).catch(err => console.log('code: '.concat(err.response.status)));
+const url = process.argv[2];
+
+if (!url) {
+  console.log('Usage: node 2-statuscode.js <URL>');
+} else {
+  request.get(url, (error, response) => {
+    if (error) {
+      console.error(error);
+    } else {
+      console.log(`code: ${response.statusCode}`);
+    }
+  });
+}
