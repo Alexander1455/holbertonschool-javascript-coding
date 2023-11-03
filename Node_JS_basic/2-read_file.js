@@ -18,9 +18,9 @@ function countStudents(path) {
       SWE: [],
     };
 
-    // Itera a través de las líneas para contar estudiantes
+    // Itera a través de las líneas para contar estudiantes y agregar nombres a las listas
     for (const line of lines) {
-      const [firstname, lastname, age, field] = line.split(",");
+      const [firstname, , , field] = line.split(",");
       if (field === "CS") {
         studentCount.CS++;
         studentList.CS.push(firstname);
